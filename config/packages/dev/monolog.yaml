@@ -1,10 +1,11 @@
 monolog:
+    channels: ["video_stream"]
     handlers:
         main:
             type: stream
             path: "%kernel.logs_dir%/%kernel.environment%.log"
             level: debug
-            channels: ["!event"]
+            channels: ["!event", "!video_stream"]
         # uncomment to get logging in your browser
         # you may have to allow bigger header sizes in your Web server configuration
         #firephp:
@@ -17,3 +18,12 @@ monolog:
             type: console
             process_psr_3_messages: false
             channels: ["!event", "!doctrine", "!console"]
+
+        video_stream:
+            channels: [ "video_stream" ]
+            path: "%kernel.logs_dir%/video_stream.log"
+            level: info
+            type: rotating_file
+            max_files: 5
+            filename_format: "{filename}_{date}"
+            date_format: "Y"
