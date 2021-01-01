@@ -12,6 +12,7 @@ use React\Http\Middleware\LimitConcurrentRequestsMiddleware;
 use React\Http\Middleware\RequestBodyBufferMiddleware;
 use React\Http\Server;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Command\LockableTrait;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -19,6 +20,8 @@ use function React\Promise\Stream\unwrapReadable;
 
 class HttpVideoStreamServerCommand extends Command
 {
+    use LockableTrait;
+
     private string $videos;
     private LoggerInterface $logger;
 
@@ -44,31 +47,35 @@ class HttpVideoStreamServerCommand extends Command
         $port = (int)$input->getArgument('port');
         $uri = $input->getArgument('uri');
 
-        $this->logger->info(sprintf('Video stream server on %s port starting', $port));
+        if (!$this->lock(sprintf('lock://%s:%s', $uri, $port))) {
+            return Command::SUCCESS;
+        }
 
-        $loop = Factory::create();
+        try {
+            $this->logger->info(sprintf('Video stream server on %s port starting', $port));
 
-        $server = new Server(
-            $loop,
-            new LimitConcurrentRequestsMiddleware(10),
-            new RequestBodyBufferMiddleware(2 * 1024 * 1024),
-            $this->getRequestHandler(\React\Filesystem\Filesystem::create($loop))
-        );
+            $loop = Factory::create();
+            $server = $this->initServer($loop);
+            $socket = new \React\Socket\Server($uri . ':' . $port, $loop);
+            $server->listen($socket);
 
-        $socket = new \React\Socket\Server($uri . ':' . $port, $loop);
-        $server->listen($socket);
+            $this->logger->info('Listening on ' . str_replace('tcp:', 'http:', $socket->getAddress()));
 
-        $output->writeln('<info>Listening on ' . str_replace('tcp:', 'http:', $socket->getAddress()) . '</info>');
+            $loop->run();
 
-        $loop->run();
-
-        return Command::SUCCESS;
+            return Command::SUCCESS;
+        } catch (\Exception $e) {
+            $this->logger->warning('Exception occurred!', [
+                'msg' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ]);
+            return Command::FAILURE;
+        } finally {
+            $this->release();
+        }
     }
 
-    /**
-     * @param \React\Filesystem\FilesystemInterface $filesystem
-     * @return \Closure
-     */
     protected function getRequestHandler(\React\Filesystem\FilesystemInterface $filesystem): \Closure
     {
         return function (ServerRequestInterface $request) use ($filesystem) {
@@ -99,5 +106,15 @@ class HttpVideoStreamServerCommand extends Command
                     }
                 );
         };
+    }
+
+    protected function initServer(\React\EventLoop\StreamSelectLoop $loop): Server
+    {
+        return new Server(
+            $loop,
+            new LimitConcurrentRequestsMiddleware(20),
+            new RequestBodyBufferMiddleware(10 * 1024 * 1024),
+            $this->getRequestHandler(\React\Filesystem\Filesystem::create($loop))
+        );
     }
 }
