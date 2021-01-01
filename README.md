@@ -1,23 +1,3 @@
-# How to install dockerized Symfony kickstart
-```shell script
-#!/bin/bash
-
-# create directory 'kickstart' and entry into it
-mkdir kickstart
-cd kickstart
-
-# install symfony using composer
-docker run --rm --interactive --tty --user $UID --volume $PWD:/app composer create-project symfony/skeleton .
-
-# add some dockerization
-git init
-git remote add origin git@gitlab.performance-media.pl:utils/kickstart.git
-git pull origin master
-git remote rm origin
-# if you wish to remove all git history
-# rm -rf .git
-```
-
 # Configuration for new project
 1. Setup **Makefile**: `ALIAS`(alias from Makefile is auto update in .docker/.env after run `make build`).
 2. Setup **Makefile**:`BUILD_IMAGE_CLI`, `BUILD_IMAGE_FPM`.
@@ -48,16 +28,5 @@ uncomment this in Makefile, and comment previous target "build-prod"
 #       --build-arg SSH_PRIVATE_KEY="${PRIVATE_KEY}" .
 ```
 
-uncomment this in production Dockerfile
-```
-#RUN apt-get update && apt-get install -y git openssh-client
-#
-#RUN mkdir -p /root/.ssh && chmod 700 /root/.ssh
-#
-#ARG SSH_PRIVATE_KEY
-#RUN echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa && \
-#    chmod 600 ~/.ssh/id_rsa && \
-#    ssh-keyscan gitlab.performance-media.pl > ~/.ssh/known_hosts
-```
 next, build your production image `make build && make build-prod`
 
