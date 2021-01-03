@@ -17,6 +17,9 @@
     "amphp/http": {
         "version": "v1.6.3"
     },
+    "amphp/http-client": {
+        "version": "v4.5.5"
+    },
     "amphp/http-server": {
         "version": "v2.1.0"
     },
