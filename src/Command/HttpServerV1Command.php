@@ -47,8 +47,6 @@ class HttpServerV1Command extends Command
             return Command::SUCCESS;
         }
 
-        $port = (int)$input->getArgument('port');
-        $uri = $input->getArgument('uri');
         $logger = $this->logger;
 
         try {
@@ -58,10 +56,10 @@ class HttpServerV1Command extends Command
                     Server::listen(sprintf('[::]:%s', $port)),
                 ];
 
-                $server = new HttpServer($servers, new CallableRequestHandler(static function () {
+                $server = new HttpServer($servers, new CallableRequestHandler(static function () use ($port) {
                     return new \Amp\Http\Server\Response(Status::OK, [
                         "content-type" => "text/html; charset=utf-8"
-                    ], "<h1>Amp http server: Hello, World!</h1>");
+                    ], sprintf('<h1>Amp http server: Hello, on port %s!</h1>', $port));
                 }), $logger);
 
                 yield $server->start();
