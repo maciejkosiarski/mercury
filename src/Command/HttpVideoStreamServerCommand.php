@@ -34,8 +34,8 @@ class HttpVideoStreamServerCommand extends Command
 
     protected function configure()
     {
-        $this->setName('app:video-stream')
-            ->setDescription('Video stream server in ReactPHP')
+        $this->setName('app:video-stream:v1')
+            ->setDescription('Video stream server in ReactPHP library')
             ->addArgument('port', InputArgument::REQUIRED,'Port number for communicate.')
             ->addArgument('uri', InputArgument::REQUIRED);
 
