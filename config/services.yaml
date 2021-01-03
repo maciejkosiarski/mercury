@@ -36,5 +36,6 @@ services:
             - { name: console.command }
         bind:
             $videos: '%kernel.project_dir%/public/video'
-            $videoStreamLogger: '@monolog.logger.video_stream'
+            $videoStreamLogger: '@monolog.logger.video_stream_v1'
+            $httpServerLogger: '@monolog.logger.http_server_v1'
             $httpClient: '@http_client'
