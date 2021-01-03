@@ -38,4 +38,5 @@ services:
             $videos: '%kernel.project_dir%/public/video'
             $videoStreamLogger: '@monolog.logger.video_stream_v1'
             $httpServerLogger: '@monolog.logger.http_server_v1'
+            $hostsLogger: '@monolog.logger.hosts'
             $httpClient: '@http_client'

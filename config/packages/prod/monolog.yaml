@@ -1,5 +1,5 @@
 monolog:
-    channels: ["video_stream_v1", "http_server_v1"]
+    channels: ["video_stream_v1", "http_server_v1","hosts"]
     handlers:
         main:
             type: fingers_crossed
@@ -25,6 +25,14 @@ monolog:
         http_server_v1:
             channels: [ "http_server_v1" ]
             path: "%kernel.logs_dir%/http/http_server_v1.log"
+            level: info
+            type: rotating_file
+            max_files: 5
+            filename_format: "{filename}_{date}"
+            date_format: "Y-m"
+        hosts:
+            channels: [ "hosts" ]
+            path: "%kernel.logs_dir%/hosts.log"
             level: info
             type: rotating_file
             max_files: 5
