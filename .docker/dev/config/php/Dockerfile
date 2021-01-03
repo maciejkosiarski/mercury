@@ -50,7 +50,7 @@ ZSH_THEME="ys"\n\n\
 plugins=(git zsh-autosuggestions)\n\
 source $ZSH/oh-my-zsh.sh\n\
 alias cat=bat\n\
-alias clear="clear; figlet hermes"\n\
+alias clear="clear; figlet lucy-app"\n\
 alias sf="php bin/console"\n\
 clear\
 ' > /home/developer/.zshrc
