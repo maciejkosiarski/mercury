@@ -14,9 +14,9 @@ monolog:
         console:
             type: console
             process_psr_3_messages: false
-        video_stream_v1_v1:
-            channels: [ "video_stream_v1_v1" ]
-            path: "%kernel.logs_dir%/video_stream_v1_v1.log"
+        video_stream_v1:
+            channels: [ "video_stream_v1" ]
+            path: "%kernel.logs_dir%/video_stream_v1.log"
             level: info
             type: rotating_file
             max_files: 5
