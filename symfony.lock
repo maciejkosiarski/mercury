@@ -158,11 +158,17 @@
             "bin/console"
         ]
     },
+    "symfony/css-selector": {
+        "version": "v5.2.1"
+    },
     "symfony/dependency-injection": {
         "version": "v5.2.0"
     },
     "symfony/deprecation-contracts": {
         "version": "v2.2.0"
+    },
+    "symfony/dom-crawler": {
+        "version": "v5.2.1"
     },
     "symfony/dotenv": {
         "version": "v5.2.0"
