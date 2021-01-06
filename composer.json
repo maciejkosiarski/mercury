@@ -16,6 +16,7 @@
         "react/filesystem": "^0.1.2",
         "react/http": "^1.2",
         "react/stream": "1.1.1",
+        "symfony/cache": "5.2.*",
         "symfony/console": "5.2.*",
         "symfony/css-selector": "5.2.*",
         "symfony/dom-crawler": "5.2.*",
