@@ -17,7 +17,7 @@ class HttpProxy
         if (!filter_var($host, FILTER_VALIDATE_IP)) {
             throw new \LogicException(sprintf('Http proxy object get invalid host value "%s"', $host));
         }
-
+        $port = (int) $port;
         if ($port > 65535 || $port < 80) {
             throw new \LogicException(sprintf('Http proxy object get invalid port value "%s"', $port));
         }
