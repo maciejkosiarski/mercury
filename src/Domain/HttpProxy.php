@@ -26,6 +26,11 @@ class HttpProxy
         $this->port = $port;
     }
 
+    public function __toString(): string
+    {
+        return sprintf('%s:%s', $this->host, $this->port);
+    }
+
     public function getHost(): string
     {
         return $this->host;
