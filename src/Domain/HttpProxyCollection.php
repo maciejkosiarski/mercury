@@ -7,7 +7,7 @@ namespace App\Domain;
 class HttpProxyCollection implements \Iterator
 {
     private int $position = 0;
-    private array $proxies;
+    private array $proxies = [];
 
     public function __construct(array $proxies)
     {
@@ -38,13 +38,18 @@ class HttpProxyCollection implements \Iterator
         return $leastUsed;
     }
 
+    public function count(): int
+    {
+        return count($this->proxies);
+    }
+
     public function exist(HttpProxy $needle): bool
     {
         $filteredCollection = array_filter($this->proxies, function (HttpProxy $proxy) use ($needle) {
             return ($proxy->getHost() === $needle->getHost() && $proxy->getPort() === $needle->getPort());
         });
 
-        return $filteredCollection > 0;
+        return !empty($filteredCollection);
     }
 
     public function rewind(): void
@@ -72,10 +77,8 @@ class HttpProxyCollection implements \Iterator
         return isset($this->proxies[$this->position]);
     }
 
-    public function addProxy(string $proxy): void
+    public function addProxy(HttpProxy $proxy): void
     {
-        $proxy = new HttpProxy($proxy);
-
         if ($this->exist($proxy)) {
             throw new \LogicException(sprintf('Http proxy "%s" already exist in collection', $proxy));
         }
@@ -83,6 +86,9 @@ class HttpProxyCollection implements \Iterator
         $this->proxies[] = $proxy;
     }
 
+    /**
+     * @param HttpProxy[] $proxies
+     */
     protected function addProxies(array $proxies): void
     {
         foreach ($proxies as $proxy) {
