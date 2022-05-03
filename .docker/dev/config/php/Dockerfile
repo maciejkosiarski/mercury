@@ -28,7 +28,6 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
     pecl clear-cache && \
     pecl config-set php_ini /usr/local/etc/php/conf.d/over.ini
 
-
 RUN echo "su - developer" > /root/.bashrc
 
 # --- bat --- #
@@ -50,7 +49,7 @@ ZSH_THEME="ys"\n\n\
 plugins=(git zsh-autosuggestions)\n\
 source $ZSH/oh-my-zsh.sh\n\
 alias cat=bat\n\
-alias clear="clear; figlet lucy-app"\n\
+alias clear="clear; figlet Mercury"\n\
 alias sf="php bin/console"\n\
 clear\
 ' > /home/developer/.zshrc

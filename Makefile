@@ -1,7 +1,7 @@
 # You need setup here: ALIAS, BUILD_IMAGE_CLI, BUILD_IMAGE_FPM
-ALIAS              = symfony
-BUILD_IMAGE_CLI   ?= php:7.4.5-cli
-BUILD_IMAGE_FPM   ?= php:7.4.5-fpm
+ALIAS              = mercury
+BUILD_IMAGE_CLI   ?= php:8.1-cli
+BUILD_IMAGE_FPM   ?= php:8.1-fpm
 ####
 
 .DEFAULT_GOAL      = help
@@ -80,11 +80,10 @@ migrate: ## Run migrations [arguments: next|n, prev,p][default cmd: d:m:m]
 ## -- Docker -----------------------------------------------------------------------------------------------------------
 build-base: ## Build base image
 	@docker build -t $(REGISTRY)/$(BASE_IMAGE_CLI) --build-arg BASE_IMAGE=$(BUILD_IMAGE_CLI)  -f $(BASE_DOCKERFILE) .
-	@docker build -t $(REGISTRY)/$(BASE_IMAGE_FPM) --build-arg BASE_IMAGE=$(BUILD_IMAGE_FPM)  -f $(BASE_DOCKERFILE) .
 
 build-dev: ## Build dev image
-	@docker build -t $(REGISTRY)/$(BASE_IMAGE_FPM)-dev         \
-		--build-arg BASE_IMAGE=$(REGISTRY)/$(BASE_IMAGE_FPM)   \
+	@docker build -t $(REGISTRY)/$(BASE_IMAGE_CLI)-dev         \
+		--build-arg BASE_IMAGE=$(REGISTRY)/$(BASE_IMAGE_CLI)   \
 		--build-arg DEVELOPER_UID=$(DEVELOPER_UID)             \
 		-f $(DEV_DOCKERFILE) .
 
@@ -92,12 +91,6 @@ build-prod:	## Build prod image
 	@docker build -t $(IMAGE)-cli:$(TAG)                       \
 		-t $(IMAGE)-cli:latest                                 \
 		--build-arg BASE_IMAGE=$(REGISTRY)/$(BASE_IMAGE_CLI) .
-
-#build-prod:	## Build prod image with private key
-#	@docker build -t $(IMAGE)-cli:$(TAG)                       \
-#		-t $(IMAGE)-cli:latest                                 \
-#		--build-arg BASE_IMAGE=$(REGISTRY)/$(BASE_IMAGE_FPM)   \
-#       --build-arg SSH_PRIVATE_KEY="${PRIVATE_KEY}" .
 
 	@docker build -t $(IMAGE)-fpm:$(TAG)                       \
 		-t $(IMAGE)-fpm:latest                                 \
